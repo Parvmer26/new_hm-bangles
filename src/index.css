@@ -1,0 +1,126 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 36 33% 97%;
+    --foreground: 20 25% 12%;
+
+    --card: 36 30% 99%;
+    --card-foreground: 20 25% 12%;
+
+    --popover: 36 30% 99%;
+    --popover-foreground: 20 25% 12%;
+
+    --primary: 350 35% 55%;
+    --primary-foreground: 36 30% 99%;
+
+    --secondary: 350 25% 94%;
+    --secondary-foreground: 20 25% 12%;
+
+    --muted: 30 15% 92%;
+    --muted-foreground: 20 10% 45%;
+
+    --accent: 345 45% 28%;
+    --accent-foreground: 36 30% 99%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 30 20% 88%;
+    --input: 30 20% 88%;
+    --ring: 350 35% 55%;
+
+    --radius: 0.5rem;
+
+    --gold: 38 70% 55%;
+    --gold-light: 38 60% 85%;
+    --rose: 350 35% 55%;
+    --rose-light: 350 30% 92%;
+    --cream: 36 33% 97%;
+    --ivory: 40 40% 95%;
+    --burgundy: 345 45% 28%;
+    --charcoal: 20 25% 12%;
+
+    --sidebar-background: 36 30% 99%;
+    --sidebar-foreground: 20 25% 12%;
+    --sidebar-primary: 350 35% 55%;
+    --sidebar-primary-foreground: 36 30% 99%;
+    --sidebar-accent: 350 25% 94%;
+    --sidebar-accent-foreground: 20 25% 12%;
+    --sidebar-border: 30 20% 88%;
+    --sidebar-ring: 350 35% 55%;
+
+    --font-heading: 'Cormorant Garamond', serif;
+    --font-body: 'Inter', sans-serif;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+  }
+}
+
+@layer components {
+  .section-heading {
+    font-family: var(--font-heading);
+    @apply text-3xl md:text-4xl lg:text-5xl font-light tracking-wide text-foreground;
+  }
+
+  .section-subheading {
+    @apply text-sm md:text-base uppercase tracking-[0.25em] text-muted-foreground font-light;
+  }
+
+  .luxury-gradient {
+    background: linear-gradient(135deg, hsl(var(--rose)) 0%, hsl(var(--gold)) 100%);
+  }
+
+  .luxury-text-gradient {
+    background: linear-gradient(135deg, hsl(var(--rose)) 0%, hsl(var(--gold)) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .glass-card {
+    @apply bg-card/80 backdrop-blur-md border border-border/50 shadow-lg;
+  }
+
+  .hover-lift {
+    @apply transition-all duration-500 ease-out;
+  }
+
+  .hover-lift:hover {
+    @apply -translate-y-2 shadow-xl;
+  }
+
+  .parallax-section {
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
