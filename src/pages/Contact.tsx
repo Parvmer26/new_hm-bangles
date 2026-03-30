@@ -32,8 +32,8 @@ const Contact = () => {
               <div className="space-y-8">
                 {[
                   { icon: Mail, title: "Email", value: "hello@hmbangles.com" },
-                  { icon: Phone, title: "Phone", value: "+91 98765 43210" },
-                  { icon: MapPin, title: "Address", value: "Mumbai, Maharashtra, India" },
+                  { icon: Phone, title: "Phone", value: "+91 94272 71597" },
+                  { icon: MapPin, title: "Address", value: "Rajkot, Gujarat, India" },
                 ].map(({ icon: Icon, title, value }) => (
                   <div key={title} className="flex items-start gap-4">
                     <div className="p-3 bg-secondary rounded-lg">

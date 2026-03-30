@@ -21,7 +21,7 @@ const Index = () => {
         <ParallaxCTA />
         <BrandStory />
         <Testimonials />
-        <Newsletter />
+        {/* <Newsletter /> */}
       </main>
       <Footer />
     </div>

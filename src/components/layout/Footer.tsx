@@ -71,11 +71,11 @@ const Footer = () => {
               </div>
               <div className="flex items-center gap-3 text-sm text-primary-foreground/70">
                 <Phone className="w-4 h-4 text-primary flex-shrink-0" />
-                +91 98765 43210
+                +91 94272 71597
               </div>
               <div className="flex items-start gap-3 text-sm text-primary-foreground/70">
                 <MapPin className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                Mumbai, Maharashtra, India
+                Rajkot, Gujarat, India
               </div>
             </div>
           </div>

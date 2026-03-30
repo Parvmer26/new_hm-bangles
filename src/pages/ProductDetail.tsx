@@ -9,50 +9,55 @@ import { ShoppingBag, Heart, ChevronRight, Minus, Plus, Truck, Shield, RotateCcw
 import { motion } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
 import ProductCard from "@/components/ProductCard";
+import { useLocation } from "react-router-dom";
+
 
 const ProductDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const { data: dbProduct, isLoading } = useProduct(slug);
   const { data: allProducts } = useProducts();
   const { addToCart } = useCart();
-  const [selectedSize, setSelectedSize] = useState("");
-  const [quantity, setQuantity] = useState(1);
+  const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [selectedImage, setSelectedImage] = useState(0);
+
+  
+const location = useLocation();
+const passedProduct = location.state?.product;
 
   // Use DB product if available, fallback to sample data
   const sampleProduct = sampleProducts.find((p) => p.slug === slug);
   
-  const product = dbProduct ? {
-    id: dbProduct.id,
-    name: dbProduct.name,
-    slug: dbProduct.slug,
-    description: dbProduct.description || "",
-    price: dbProduct.price,
-    discountPrice: dbProduct.discount_price,
-    images: dbProduct.images.length > 0 ? dbProduct.images.map(img => img.image_url) : ["/placeholder.svg"],
-    sizes: dbProduct.sizes.map(s => s.name),
-    category: dbProduct.category?.name || "",
-    collection: dbProduct.collection || "",
-    material: dbProduct.material || "",
-    color: dbProduct.color || "",
-    sku: dbProduct.sku,
-  } : sampleProduct ? {
-    id: sampleProduct.id,
-    name: sampleProduct.name,
-    slug: sampleProduct.slug,
-    description: sampleProduct.description,
-    price: sampleProduct.price,
-    discountPrice: sampleProduct.discountPrice,
-    images: sampleProduct.images,
-    sizes: sampleProduct.sizes,
-    category: sampleProduct.category,
-    collection: sampleProduct.collection,
-    material: sampleProduct.material,
-    color: sampleProduct.color,
-    sku: sampleProduct.sku,
-  } : null;
+ const product = passedProduct || (dbProduct ? {
+  id: dbProduct.id,
+  name: dbProduct.name,
+  slug: dbProduct.slug,
+  description: dbProduct.description || "",
+  price: dbProduct.price,
+  discountPrice: dbProduct.discount_price,
+  images: dbProduct.images.length > 0 ? dbProduct.images.map(img => img.image_url) : ["/placeholder.svg"],
+  sizes: dbProduct.sizes.map(s => s.name),
+  category: dbProduct.category?.name || "",
+  collection: dbProduct.collection || "",
+  material: dbProduct.material || "",
+  color: dbProduct.color || "",
+  sku: dbProduct.sku,
+} : sampleProduct ? {
+  id: sampleProduct.id,
+  name: sampleProduct.name,
+  slug: sampleProduct.slug,
+  description: sampleProduct.description,
+  price: sampleProduct.price,
+  discountPrice: sampleProduct.discountPrice,
+  images: sampleProduct.images,
+  sizes: sampleProduct.sizes,
+  category: sampleProduct.category,
+  collection: sampleProduct.collection,
+  material: sampleProduct.material,
+  color: sampleProduct.color,
+  sku: sampleProduct.sku,
+} : null);
 
-  if (isLoading) {
+  if (isLoading && !passedProduct) {
     return (
       <div className="min-h-screen">
         <Navbar />
@@ -90,20 +95,22 @@ const ProductDetail = () => {
       }))
     : sampleProducts.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4);
 
-  const handleAddToCart = () => {
-    if (!selectedSize) return;
-    // Pass a compatible product object to addToCart
-    const cartProduct = sampleProducts.find(p => p.id === product.id) || {
-      ...sampleProducts[0],
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      discountPrice: product.discountPrice || undefined,
-      images: product.images,
-      sizes: product.sizes,
-    };
-    addToCart(cartProduct, selectedSize, quantity);
-  };
+ const handleAddToCart = () => {
+  selectedSizes.forEach((size) => {
+    const cartProduct =
+      sampleProducts.find((p) => p.id === product.id) || {
+        ...sampleProducts[0],
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        discountPrice: product.discountPrice || undefined,
+        images: product.images,
+        sizes: product.sizes,
+      };
+
+    addToCart(cartProduct, size, 1); // default quantity 1
+  });
+};
 
   return (
     <div className="min-h-screen">
@@ -180,27 +187,41 @@ const ProductDetail = () => {
               <div>
                 <p className="text-sm font-medium text-foreground mb-3">Select Size</p>
                 <div className="flex flex-wrap gap-2">
-                  {product.sizes.map((size) => (
-                    <button key={size} onClick={() => setSelectedSize(size)}
-                      className={`px-4 py-2.5 text-sm rounded-sm border transition-all ${selectedSize === size ? "border-primary bg-primary text-primary-foreground" : "border-border text-foreground hover:border-primary"}`}>
-                      {size}
-                    </button>
-                  ))}
-                </div>
-                {!selectedSize && <p className="text-xs text-primary mt-2">Please select a size</p>}
-              </div>
+  {product.sizes.map((size) => (
+    <button
+      key={size}
+      onClick={() => {
+        setSelectedSizes((prev) =>
+          prev.includes(size)
+            ? prev.filter((s) => s !== size)
+            : [...prev, size]
+        );
+      }}
+      className={`px-4 py-2 border rounded-sm transition ${
+        selectedSizes.includes(size)
+          ? "bg-primary text-white border-primary"
+          : "border-border"
+      }`}
+    >
+      {size}
+    </button>
+  ))}
+</div>
+{selectedSizes.length === 0 && (
+  <p className="text-xs text-primary mt-2">Please select a size</p>
+)}             </div>
 
-              <div>
+              {/* <div>
                 <p className="text-sm font-medium text-foreground mb-3">Quantity</p>
                 <div className="inline-flex items-center border border-border rounded-sm">
                   <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="p-3 hover:bg-secondary transition-colors"><Minus className="w-4 h-4" /></button>
                   <span className="px-5 py-3 text-sm font-medium min-w-[50px] text-center">{quantity}</span>
                   <button onClick={() => setQuantity(quantity + 1)} className="p-3 hover:bg-secondary transition-colors"><Plus className="w-4 h-4" /></button>
                 </div>
-              </div>
+              </div> */}
 
               <div className="flex gap-3 pt-2">
-                <button onClick={handleAddToCart} disabled={!selectedSize}
+                <button onClick={handleAddToCart} disabled={selectedSizes.length === 0}
                   className="flex-1 inline-flex items-center justify-center gap-2 px-8 py-4 bg-foreground text-primary-foreground text-sm uppercase tracking-[0.15em] font-medium rounded-sm hover:bg-foreground/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                   <ShoppingBag className="w-4 h-4" /> Add to Cart
                 </button>
@@ -235,7 +256,7 @@ const ProductDetail = () => {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8">
               {related.map((p, i) => (
                 <ScrollReveal key={p.id} delay={i * 0.1}>
-                  <ProductCard product={p as any} />
+                  <ProductCard product={p} />
                 </ScrollReveal>
               ))}
             </div>

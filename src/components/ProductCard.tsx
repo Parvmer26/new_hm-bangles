@@ -16,7 +16,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
       whileHover={{ y: -8 }}
       transition={{ duration: 0.4 }}
     >
-      <Link to={`/product/${product.slug}`}>
+      <Link
+  to={`/product/${product.slug}`}
+  state={{ product }}
+>
         <div className="relative overflow-hidden rounded-lg bg-card aspect-square">
           <img
             src={product.thumbnail}
@@ -59,9 +62,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
             {product.category}
           </p>
-          <h3 className="font-heading text-lg font-medium text-foreground group-hover:text-primary transition-colors">
-            {product.name}
-          </h3>
+          <h3 className="font-heading text-lg font-medium text-foreground group-hover:text-primary transition-colors line-clamp-2 min-h-[3rem] leading-tight">
+  {product.name}
+</h3>
           <div className="flex items-center gap-2">
             {hasDiscount ? (
               <>
