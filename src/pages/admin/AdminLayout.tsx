@@ -1,10 +1,14 @@
 import { Link, Outlet, useLocation, Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, Package, FolderOpen, Ruler, ShoppingCart,
   Users, LogOut, ChevronRight, Menu, X
 } from "lucide-react";
 import { useState } from "react";
+import { useEffect } from "react";
+
+
 
 const navItems = [
   { to: "/admin", icon: LayoutDashboard, label: "Dashboard", exact: true },
@@ -19,9 +23,26 @@ const AdminLayout = () => {
   const { user, isAdmin, loading, signOut } = useAuth();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const navigate = useNavigate();
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full" /></div>;
-  if (!user || !isAdmin) return <Navigate to="/login" replace />;
+
+useEffect(() => {
+  if (!loading) {
+    if (!user) {
+      navigate("/admin-login");
+    } else if (!isAdmin) {
+      navigate("/");
+    }
+  }
+}, [user, isAdmin, loading]);
+
+
+if (loading)
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full" />
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-secondary/30 flex">
